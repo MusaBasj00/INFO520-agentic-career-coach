@@ -1,0 +1,56 @@
+[
+  {
+    "jobId": "job_001",
+    "company": "Capital One",
+    "title": "Software Engineering Intern",
+    "location": "Richmond, VA",
+    "term": "Spring 2026",
+    "keywords": ["software", "backend", "python"],
+    "url": "https://example.com/jobs/job_001"
+  },
+  {
+    "jobId": "job_002",
+    "company": "Google",
+    "title": "Data Analyst Intern",
+    "location": "New York, NY",
+    "term": "Spring 2026",
+    "keywords": ["data", "analytics", "sql"],
+    "url": "https://example.com/jobs/job_002"
+  },
+  {
+    "jobId": "job_003",
+    "company": "Microsoft",
+    "title": "Cloud Engineering Intern",
+    "location": "Reston, VA",
+    "term": "Summer 2026",
+    "keywords": ["cloud", "azure", "infrastructure"],
+    "url": "https://example.com/jobs/job_003"
+  },
+  {
+    "jobId": "job_004",
+    "company": "Amazon",
+    "title": "Product Management Intern",
+    "location": "Arlington, VA",
+    "term": "Spring 2026",
+    "keywords": ["product", "strategy", "agile"],
+    "url": "https://example.com/jobs/job_004"
+  },
+  {
+    "jobId": "job_005",
+    "company": "Meta",
+    "title": "Software Engineering Intern",
+    "location": "New York, NY",
+    "term": "Spring 2026",
+    "keywords": ["software", "frontend", "react"],
+    "url": "https://example.com/jobs/job_005"
+  },
+  {
+    "jobId": "job_006",
+    "company": "Deloitte",
+    "title": "Cybersecurity Intern",
+    "location": "Richmond, VA",
+    "term": "Spring 2026",
+    "keywords": ["security", "risk", "compliance"],
+    "url": "https://example.com/jobs/job_006"
+  }
+]

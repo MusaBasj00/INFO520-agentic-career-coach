@@ -1,0 +1,18 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'mcp-server/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/acc-mcp-server', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/acc-mcp-server']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run', 'deploy', 'acc-mcp-server',
+        '--image', 'gcr.io/$PROJECT_ID/acc-mcp-server',
+        '--region', 'us-central1',
+        '--platform', 'managed',
+        '--allow-unauthenticated',
+        '--set-env-vars', 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,FIRESTORE_COLLECTION=pipeline_entries'
+      ]
+images:
+  - 'gcr.io/$PROJECT_ID/acc-mcp-server'

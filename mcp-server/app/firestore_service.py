@@ -7,9 +7,10 @@ except ImportError:  # pragma: no cover
     firestore = None
 
 from .config import FIRESTORE_COLLECTION, GOOGLE_CLOUD_PROJECT
+from .data_loader import JobDataLoader
 from .mock_store import MockPipelineStore
 from .schemas import PipelineActionResponse, PipelineEntry
-from .utils import success_message
+from .utils import compact_job, success_message
 
 
 class FirestorePipelineService:
@@ -17,25 +18,39 @@ class FirestorePipelineService:
         self.enabled = bool(firestore and GOOGLE_CLOUD_PROJECT)
         self._client = firestore.Client(project=GOOGLE_CLOUD_PROJECT) if self.enabled else None
         self._mock_store = MockPipelineStore()
+        self._job_loader = JobDataLoader()
 
     def _collection(self):
         if not self._client:
             raise RuntimeError("Firestore is not configured")
         return self._client.collection(FIRESTORE_COLLECTION)
 
+    def _hydrate_payload(self, payload: dict[str, Any]) -> dict[str, Any]:
+        hydrated = dict(payload)
+        job_id = hydrated.get("jobId", "")
+        matched_job = self._job_loader.get_job_by_id(job_id) if job_id else None
+        if matched_job:
+            for field, value in compact_job(matched_job).items():
+                if field == "keywords":
+                    continue
+                if not hydrated.get(field):
+                    hydrated[field] = value
+        return hydrated
+
     def _normalize_entry(self, payload: dict[str, Any], now: str | None = None) -> dict[str, Any]:
         timestamp = now or datetime.now(timezone.utc).isoformat()
+        normalized_payload = self._hydrate_payload(payload)
         return {
-            "jobId": payload.get("jobId", ""),
-            "company": payload.get("company", ""),
-            "title": payload.get("title", ""),
-            "location": payload.get("location", ""),
-            "url": payload.get("url", ""),
-            "term": payload.get("term", ""),
-            "status": payload.get("status", "saved"),
-            "deadline": payload.get("deadline", ""),
-            "notes": payload.get("notes", ""),
-            "createdAt": payload.get("createdAt", timestamp),
+            "jobId": normalized_payload.get("jobId", ""),
+            "company": normalized_payload.get("company", ""),
+            "title": normalized_payload.get("title", ""),
+            "location": normalized_payload.get("location", ""),
+            "url": normalized_payload.get("url", ""),
+            "term": normalized_payload.get("term", ""),
+            "status": normalized_payload.get("status", "saved"),
+            "deadline": normalized_payload.get("deadline", ""),
+            "notes": normalized_payload.get("notes", ""),
+            "createdAt": normalized_payload.get("createdAt", timestamp),
             "updatedAt": timestamp,
         }
 
@@ -64,7 +79,10 @@ class FirestorePipelineService:
         job_id = payload.get("jobId")
         if not job_id:
             raise ValueError("jobId is required for update")
-        update_payload = {**payload, "updatedAt": datetime.now(timezone.utc).isoformat()}
+        update_payload = {
+            **self._hydrate_payload(payload),
+            "updatedAt": datetime.now(timezone.utc).isoformat(),
+        }
         if not self.enabled:
             updated = self._mock_store.update(update_payload)
             if updated is None:

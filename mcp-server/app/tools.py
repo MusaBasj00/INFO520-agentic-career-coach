@@ -10,25 +10,47 @@ job_loader = JobDataLoader()
 pipeline_service = FirestorePipelineService()
 
 
+def _normalize(value: str) -> str:
+    return " ".join(str(value or "").lower().replace(",", " ").split())
+
+
+def _location_matches(requested_location: str, job_location: str) -> bool:
+    requested = _normalize(requested_location)
+    actual = _normalize(job_location)
+    if not requested:
+        return True
+    if requested in actual:
+        return True
+    requested_tokens = set(requested.split())
+    actual_tokens = set(actual.split())
+    return requested_tokens.issubset(actual_tokens)
+
+
+def _term_matches(requested_term: str, job_term: str) -> bool:
+    requested = _normalize(requested_term)
+    actual = _normalize(job_term)
+    if not requested:
+        return True
+    return requested == actual or requested in actual or actual in requested
+
+
 def fetch_jobs(params: dict[str, Any]) -> dict[str, Any]:
     request = FetchJobsRequest(**params)
     jobs = job_loader.load_jobs()
 
     def matches(job: dict[str, Any]) -> bool:
-        keyword = request.keyword.lower()
-        location = request.location.lower()
-        term = request.term.lower()
-        haystack = " ".join([
+        keyword = _normalize(request.keyword)
+        haystack = _normalize(" ".join([
             job.get("title", ""),
             job.get("company", ""),
             job.get("location", ""),
             " ".join(job.get("keywords", [])),
             job.get("term", ""),
-        ]).lower()
+        ]))
         return (
             (not keyword or keyword in haystack)
-            and (not location or location in job.get("location", "").lower())
-            and (not term or term == job.get("term", "").lower())
+            and _location_matches(request.location, job.get("location", ""))
+            and _term_matches(request.term, job.get("term", ""))
         )
 
     results = [compact_job(job) for job in jobs if matches(job)]

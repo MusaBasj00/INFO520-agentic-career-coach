@@ -62,18 +62,20 @@ def _compact_for_mcp(tool_name: str, result: dict[str, Any]) -> dict[str, Any]:
         }
         if result.get("entry"):
             entry = result["entry"]
-            compact["entry"] = {
-                "jobId": entry.get("jobId", ""),
-                "company": entry.get("company", ""),
-                "title": entry.get("title", ""),
-                "status": entry.get("status", ""),
-            }
+            compact["jobId"] = entry.get("jobId", "")
+            compact["company"] = entry.get("company", "")
+            compact["title"] = entry.get("title", "")
+            compact["location"] = entry.get("location", "")
+            compact["url"] = entry.get("url", "")
+            compact["status"] = entry.get("status", "")
         if result.get("entries"):
             compact["entries"] = [
                 {
                     "jobId": item.get("jobId", ""),
                     "company": item.get("company", ""),
                     "title": item.get("title", ""),
+                    "location": item.get("location", ""),
+                    "url": item.get("url", ""),
                     "status": item.get("status", ""),
                 }
                 for item in result["entries"]
@@ -118,7 +120,6 @@ def handle_mcp_message(method: str, params: dict[str, Any] | None = None) -> dic
                     "text": _to_safe_text(compact_result),
                 }
             ],
-            "structuredContent": compact_result,
             "isError": False,
         }
 

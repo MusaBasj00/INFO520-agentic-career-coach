@@ -57,7 +57,7 @@ Agentic Career Coach is a multi-agent internship search assistant built for VCU 
 ## Run and Deploy
 
 ### Local run
-From `agentic-career-coach/mcp-server`:
+From `mcp-server`:
 
 ```powershell
 python -m venv .venv
@@ -73,7 +73,7 @@ python test_mcp.py
 ```
 
 ### Cloud Run deployment
-From `agentic-career-coach` project root:
+From project root:
 
 ```powershell
 gcloud config set project vocal-catalyst-430900-m9
@@ -89,7 +89,7 @@ Detailed deployment, validation, and Vertex configuration steps are also documen
 ## Repository Structure
 
 ```text
-agentic-career-coach/
+.
 ├─ README.md
 ├─ docs/
 ├─ data/
@@ -119,6 +119,24 @@ agentic-career-coach/
    ├─ test_mcp.py
    └─ test_rpc.py
 ```
+
+## GenAI Usage
+
+Generative AI tools were used to support brainstorming, architecture clarification, code drafting, debugging, documentation refinement, and presentation preparation for this project. All AI-assisted content was reviewed, adapted, and integrated into the final submission by the author.
+
+Citations for major GenAI assistance used in this project:
+- OpenAI. (2026, May 5). *Assistance with README refinement, demo flow updates, MCP troubleshooting, and project documentation for Agentic Career Coach* [Generative AI chat]. ChatGPT.
+- Google Cloud. (2026). *Vertex AI Agent Builder product documentation and platform guidance* [Documentation]. Google Cloud.
+
+## References
+
+OpenAI. (2026, May 5). *Assistance with README refinement, demo flow updates, MCP troubleshooting, and project documentation for Agentic Career Coach* [Generative AI chat]. ChatGPT.
+
+Google Cloud. (2026). *Vertex AI Agent Builder documentation*. https://cloud.google.com/vertex-ai/generative-ai/docs/agent-builder/overview
+
+Google Cloud. (2026). *Cloud Run documentation*. https://cloud.google.com/run/docs
+
+Google Cloud. (2026). *Cloud Firestore documentation*. https://cloud.google.com/firestore/docs
 
 ## Submission Alignment
 
